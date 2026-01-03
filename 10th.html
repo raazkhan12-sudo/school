@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Raaz Memory Game - The Concept Science School</title>
+    <style> 
+        body {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #06465f 0%, #055e64 100%);
+            min-height: 100%;
+            color: #094c6b;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .animated-logo {
+            width: 60px;
+            height: 60px;
+            animation: logoFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            25% { transform: translateY(-5px) rotate(2deg); }
+            50% { transform: translateY(-8px) rotate(0deg); }
+            75% { transform: translateY(-3px) rotate(-2deg); }
+        }
+
+        .school-info h1 {
+            margin: 0;
+            font-size: 24px;
+            color: #2c3e50;
+            font-weight: bold;
+        }
+
+        .school-info p {
+            margin: 5px 0 0 0;
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+
+        .game-title {
+            text-align: center;
+            color: #2c3e50;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .game-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        .game-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .game-header h2 {
+            color: #2c3e50;
+            margin: 0 0 10px 0;
+            font-size: 28px;
+        }
+
+        .game-stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 25px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(238, 90, 36, 0.3);
+        }
+
+        .memory-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            max-width: 600px;
+            margin: 0 auto 30px auto;
+        }
+
+        .memory-card {
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(116, 185, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .memory-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(116, 185, 255, 0.4);
+        }
+
+        .memory-card.flipped {
+            background: linear-gradient(135deg, #00b894, #00a085);
+            transform: rotateY(180deg);
+        }
+
+        .memory-card.matched {
+            background: linear-gradient(135deg, #fdcb6e, #e17055);
+            animation: matchPulse 0.6s ease;
+        }
+
+        @keyframes matchPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .card-back {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .question-section {
+            background: linear-gradient(135deg, #a29bfe, #6c5ce7);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+            color: white;
+            text-align: center;
+        }
+
+        .question-section h3 {
+            margin: 0 0 15px 0;
+            font-size: 22px;
+        }
+
+        .question {
+            font-size: 18px;
+            font-weight: 500;
+            margin: 10px 0;
+            padding: 15px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 25px 0;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00b894, #00a085);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 184, 148, 0.3);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #fd79a8, #e84393);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(232, 67, 147, 0.3);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .footer p {
+            margin: 5px 0;
+            color: #fdfeff;
+            font-weight: 500;
+        }
+
+        .celebration {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
+            z-index: 1000;
+            display: none;
+        }
+
+        .celebration.show {
+            display: block;
+            animation: celebrationPop 0.5s ease;
+        }
+
+        @keyframes celebrationPop {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .memory-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 10px;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .game-stats {
+                gap: 15px;
+            }
+            
+            .stat {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo-section">
+            <img class="animated-logo" src="LOGO.jpeg" alt="The Concept Science School Logo" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxjaXJjbGUgY3g9IjUwIiBjeT0iNTAiIHI9IjQ1IiBmaWxsPSIjNjY3ZWVhIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iMyIvPjx0ZXh0IHg9IjUwIiB5PSI1NSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2ZmZiIgZm9udC1zaXplPSIxNiIgZm9udC13ZWlnaHQ9ImJvbGQiPlRDUzwvdGV4dD48L3N2Zz4='; this.alt='TCS Logo';" />
+            <div class="school-info">
+                <h1>THE CONCEPT SCIENCE SCHOOL</h1>
+                <p>Excellence in Education & Innovation</p>
+            </div>
+        </div>
+        <div class="game-title">
+            <h1>🧠 A Project By Team RAAZ "Memory Game"</h1>
+        </div>
+    </header>
+
+    <main class="game-container">
+        <div class="game-header">
+            <h2>🎯 Memory Challenge</h2>
+            <p>Match the emoji pairs and discover conversation starters!</p>
+        </div>
+
+        <div class="game-stats">
+            <div class="stat">⏱️ Time: <span id="timer">0:00</span></div>
+            <div class="stat">🎯 Moves: <span id="moves">0</span></div>
+            <div class="stat">✨ Matches: <span id="matches">0/6</span></div>
+        </div>
+
+        <div class="memory-grid" id="gameGrid"></div>
+
+        <div class="controls">
+            <button class="btn btn-primary" onclick="startNewGame()">🎮 New Game</button>
+            <button class="btn btn-secondary" onclick="showRandomQuestion()">💬 Random Question</button>
+        </div>
+
+        <div class="question-section">
+            <h3>🗣️ Ice Breaker Question</h3>
+            <div class="question" id="currentQuestion">
+                What emoji best describes your morning routine?
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p><strong>A Project by Class 9th and 10th</strong></p>
+        <p><strong>Supervised by Sir Raaz</strong></p>
+        <p>© 2024 The Concept Science School - Fostering Innovation & Learning</p>
+    </footer>
+
+    <div class="celebration" id="celebration">
+        <h2>🎉 Congratulations!</h2>
+        <p>You've completed the memory game!</p>
+        <p>Time to break the ice with your team!</p>
+        <button class="btn btn-primary" onclick="hideCelebration()">Continue</button>
+    </div>
+
+    <script>
+        const emojis = ['🚀', '💡', '🎯', '⭐', '🔥', '💎'];
+        const questions = [
+     "Subha uth kar sabse pehle phone check karte ho ya chehra?",
+"Class mein kabhi aisa hua ke teacher ne question poocha aur tum confident galat jawab de gaye?",
+"Agar tum ek din ke liye teacher ban jao to kis student ko sabse pehle punish karogay?",
+"Kabhi kisi friend ka homework apna bana kar submit kiya hai?",
+"Class ke dauran sabse zyada kis baat par hansi control nahi hoti?",
+"Agar tumhara secret crush class mein baithay to dhyaan lecture par hota hai ya un par?",
+"Group study karte waqt padhai zyada hoti hai ya gossip?",
+"Exam ke time sabse creative cheating trick kya use ki thi?",
+"Agar attendance mobile app se hoti to tum daily absent hotay ya present?",
+"Teacher ne kabhi aisa pakra ke tumne bola ‘sir ma bas likh raha tha’?",
+"Agar school mein CCTV na ho to sabse pehle kya shararat karogay?",
+"Kabhi aisa note likha jo teacher ne padh liya aur tum phans gaye?",
+"Agar tumhe ek din ke liye principal banaya jaye to pehla rule kya badlogay?",
+"Class group mein sabse zyada memes bhejnay wala kaun hai?",
+"Homework bhoolne ka sabse filmy bahana kya diya tha?",
+"Agar tumhe class ka naam badalna ho to kya naam rakho gay?",
+"Kabhi kisi friend ka lunch bina pooche khaya hai?",
+"Agar tumhe sirf ek hi period chhutti milay, to kaunsi class skip karna pasand karogay?",
+"Class photo mein hamesha funny pose dene wala kaun hota hai?",
+"Agar tumhari life ek film hoti to uska title kya hota?"  ];
+
+        let gameState = {
+            cards: [],
+            flippedCards: [],
+            matches: 0,
+            moves: 0,
+            startTime: null,
+            timer: null,
+            gameActive: false
+        };
+
+        function initializeGame() {
+            const gameCards = [...emojis, ...emojis];
+            gameState.cards = shuffleArray(gameCards).map((emoji, index) => ({
+                id: index,
+                emoji: emoji,
+                flipped: false,
+                matched: false
+            }));
+            
+            renderGrid();
+            resetStats();
+            showRandomQuestion();
+        }
+
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        function renderGrid() {
+            const grid = document.getElementById('gameGrid');
+            grid.innerHTML = '';
+            
+            gameState.cards.forEach(card => {
+                const cardElement = document.createElement('div');
+                cardElement.className = 'memory-card';
+                cardElement.onclick = () => flipCard(card.id);
+                
+                if (card.flipped || card.matched) {
+                    cardElement.textContent = card.emoji;
+                    cardElement.classList.add('flipped');
+                } else {
+                    cardElement.innerHTML = '<div class="card-back">?</div>';
+                }
+                
+                if (card.matched) {
+                    cardElement.classList.add('matched');
+                }
+                
+                grid.appendChild(cardElement);
+            });
+        }
+
+        function flipCard(cardId) {
+            if (!gameState.gameActive) {
+                startGame();
+            }
+            
+            const card = gameState.cards[cardId];
+            
+            if (card.flipped || card.matched || gameState.flippedCards.length >= 2) {
+                return;
+            }
+            
+            card.flipped = true;
+            gameState.flippedCards.push(card);
+            renderGrid();
+            
+            if (gameState.flippedCards.length === 2) {
+                gameState.moves++;
+                updateStats();
+                
+                setTimeout(() => {
+                    checkMatch();
+                }, 1000);
+            }
+        }
+
+        function checkMatch() {
+            const [card1, card2] = gameState.flippedCards;
+            
+            if (card1.emoji === card2.emoji) {
+                card1.matched = true;
+                card2.matched = true;
+                gameState.matches++;
+                
+                if (gameState.matches === 6) {
+                    endGame();
+                }
+            } else {
+                card1.flipped = false;
+                card2.flipped = false;
+            }
+            
+            gameState.flippedCards = [];
+            renderGrid();
+            updateStats();
+        }
+
+        function startGame() {
+            gameState.gameActive = true;
+            gameState.startTime = Date.now();
+            gameState.timer = setInterval(updateTimer, 1000);
+        }
+
+        function endGame() {
+            gameState.gameActive = false;
+            clearInterval(gameState.timer);
+            document.getElementById('celebration').classList.add('show');
+        }
+
+        function updateTimer() {
+            if (!gameState.startTime) return;
+            
+            const elapsed = Math.floor((Date.now() - gameState.startTime) / 1000);
+            const minutes = Math.floor(elapsed / 60);
+            const seconds = elapsed % 60;
+            document.getElementById('timer').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function updateStats() {
+            document.getElementById('moves').textContent = gameState.moves;
+            document.getElementById('matches').textContent = `${gameState.matches}/6`;
+        }
+
+        function resetStats() {
+            gameState.matches = 0;
+            gameState.moves = 0;
+            gameState.gameActive = false;
+            gameState.flippedCards = [];
+            
+            if (gameState.timer) {
+                clearInterval(gameState.timer);
+            }
+            
+            document.getElementById('timer').textContent = '0:00';
+            updateStats();
+        }
+
+        function startNewGame() {
+            initializeGame();
+        }
+
+        function showRandomQuestion() {
+            const randomQuestion = questions[Math.floor(Math.random() * questions.length)];
+            document.getElementById('currentQuestion').textContent = randomQuestion;
+        }
+
+        function hideCelebration() {
+            document.
+            getElementById('celebration').classList.remove('show');
+        }
+
+        // Initialize the game when page loads
+        initializeGame();
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9958836d102097a4',t:'MTc2MTYzNDM3OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
